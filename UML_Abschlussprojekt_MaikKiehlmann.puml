@@ -1,0 +1,59 @@
+@startuml
+class Student {
+- int id
+- String name
+- List<Enrollment> enrollments
++ addEnrollment(Enrollment)
++ double getAverageGrade()
++ String toCSV()
+}
+class Module {
+- int id
+- String name
+- List<Enrollment> enrollments
++ double getAverageGrade()
++ String toCSV()
+}
+class Enrollment {
+- Student student
+- Module module
+- double grade
+- boolean passed
++ String toCSV()
+}
+class Main {
+- Map<int,Student> students
+- Map<int,Module> modules
+- FileManager fileManager
+- Scanner scanner
++ void main(String[])
+- showMenu()
+- createStudent()
+- createModule()
+- assignModule()
+- removeEnrollment()
+- enterGrade()
+}
+class FileManager {
+- String STUDENTS_FILE
+- String MODULES_FILE
+- String ENROLLMENTS_FILE
++ saveData()
++ loadData()
+}
+exception Exception {
+InvalidGradeException
+DuplicateEntryException
+StudentNotFoundException
+ModuleNotFoundException
+}
+
+Student --> Enrollment
+Module --> Enrollment
+Enrollment --> Exception : throws
+Main ..> FileManager : uses
+Main --> Student : saves in Map
+Main --> Module : saves in Map
+
+
+@enduml
