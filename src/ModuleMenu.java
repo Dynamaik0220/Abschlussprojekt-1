@@ -13,7 +13,7 @@ public class ModuleMenu extends BaseMenu {
                 
                 Show all modules: all
                 Add module: add, Name
-                View and edit module: edit, id
+                View and manage module: manage, id
                 Return to main menu: back
                 """);
             String[] input = readInput();
@@ -31,11 +31,11 @@ public class ModuleMenu extends BaseMenu {
                     printModules();
                     break;
 
-                case "edit":                          // enroll student
+                case "manage":                          // enroll student
                     if (input.length == 2) {
-                        startEditModuleMenu(input, Integer.parseInt(input[1]));
+                        startManageModuleMenu(input, Integer.parseInt(input[1]));
                     } else {
-                        System.out.println("Invalid input, please use the exact format 'edit, id'");
+                        System.out.println("Invalid input, please use the exact format 'manage, id'");
                     }
                     break;
 
@@ -49,11 +49,11 @@ public class ModuleMenu extends BaseMenu {
         }
     }
 
-    public void startEditModuleMenu(String[] input, int moduleID) {
+    public void startManageModuleMenu(String[] input, int moduleID) {
         boolean exitSubmenu = false;
 
         while (!exitSubmenu) {
-            System.out.println("----Editing " + manager.getModules().get(moduleID).getName() + "----");
+            System.out.println("----Managing " + manager.getModules().get(moduleID).getName() + "----");
             System.out.println("""   
                     Enroll student in Module: enroll, StudentID
                     Return to main menu: back
@@ -72,7 +72,7 @@ public class ModuleMenu extends BaseMenu {
                             System.out.println("Invalid input: " + e);
                         }
                     } else {
-                        System.out.println("Invalid input, please use the exact format 'edit, ModuleID'");
+                        System.out.println("Invalid input, please use the exact format 'manage, ModuleID'");
                     }
                     break;
 
