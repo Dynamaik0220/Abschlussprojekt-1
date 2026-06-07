@@ -1,8 +1,8 @@
 import java.util.HashMap;
 
 public class Manager {
-    private HashMap<Integer, Student> students;
-    private HashMap<Integer, Module> modules;
+    private final HashMap<Integer, Student> students;
+    private final HashMap<Integer, Module> modules;
 
     public Manager(){
         students = new HashMap<>();
@@ -75,7 +75,7 @@ public class Manager {
         Student student = getStudentById(studentID);
         Module module = getModuleById(moduleID);
 
-        for (Enrollment enrollment : student.getEnrollmentList())
+        for (Enrollment enrollment : student.getEnrollments())
             if (enrollment.module.getId() == moduleID) {
                 throw new DuplicateEnrollmentException("Student is already enrolled in that module.");
             }
@@ -89,17 +89,13 @@ public class Manager {
             throws StudentNotFoundException, ModuleNotFoundException, InvalidGradeException {
         if ((grade >= 1.0 && grade <= 4.0) || grade == 5.0){
             Student student = getStudentById(studentID);
-            if (student.getEnrollmentList().isEmpty()) {
+            if (student.getEnrollments().isEmpty()) {
                 throw new ModuleNotFoundException("This student is not enrolled in any modules.");
             }
-            for (Enrollment enrollment : student.getEnrollmentList()) {
+            for (Enrollment enrollment : student.getEnrollments()) {
                 if (enrollment.module.getId() == moduleId){
                     enrollment.setGrade(grade);
-                    if (grade == 5.0){
-                        enrollment.setPassed(false);
-                    } else {
-                        enrollment.setPassed(true);
-                    }
+                    enrollment.setPassed(grade != 5.0);
                     return;
                 }
             }

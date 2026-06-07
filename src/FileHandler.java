@@ -85,7 +85,7 @@ public class FileHandler {
     public void saveEnrollments(Collection<Student> students) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("enrollments.csv"))) {
             for (Student s : students) {
-                for (Enrollment e : s.getEnrollmentList()) {
+                for (Enrollment e : s.getEnrollments()) {
                     int studentId = s.getId();
                     int moduleId = e.module.getId();
                     double grade = e.getGrade();

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Student {
-    private int id;
+    private final int id;
     private static int idTracker = 1;
     private String name;
     private List<Enrollment> enrollments;
@@ -48,7 +48,7 @@ public class Student {
         return (sum / gradeCount);
     }
 
-    public List<Enrollment> getEnrollmentList() {
+    public List<Enrollment> getEnrollments() {
         return enrollments;
     }
 

@@ -36,7 +36,7 @@ public class StudentMenu extends BaseMenu{
                 case "edit":
                     try {
                         if (input.length == 2) {
-                            startEditStudentMenu(input, Integer.parseInt(input[1]));
+                            startEditStudentMenu(Integer.parseInt(input[1]));
                         } else {
                             System.out.println("Invalid input, please use the exact format 'edit, id'");
                         }
@@ -57,7 +57,7 @@ public class StudentMenu extends BaseMenu{
         }
     }
 
-    public void startEditStudentMenu(String[] input, int studentID) {
+    public void startEditStudentMenu(int studentID) {
         boolean exitSubmenu = false;
         Student selectedStudent = manager.getStudentById(studentID);
 
@@ -71,7 +71,7 @@ public class StudentMenu extends BaseMenu{
                     Delete Student: delete
                     Return to main menu: back
                     """);
-            input = sc.nextLine().split(", ");
+            String[] input = sc.nextLine().split(", ");
             switch(input[0]) {
                 case "info":
                     printEnrollments(selectedStudent);
@@ -157,7 +157,7 @@ public class StudentMenu extends BaseMenu{
     }
 
     public void printEnrollments(Student student){
-        List<Enrollment> enrollments = student.getEnrollmentList();
+        List<Enrollment> enrollments = student.getEnrollments();
 
         if (enrollments.isEmpty()) {
             System.out.println("This student is not enrolled in any modules.");
