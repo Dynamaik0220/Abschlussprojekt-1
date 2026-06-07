@@ -23,12 +23,17 @@ public class MainMenu extends BaseMenu {
                 case "s":
                     studentMenu.start();
                     break;
+
                 case "m":
                     moduleMenu.start();
                     break;
+
                 case "e":
                     exit = true;
                     break;
+
+                default:
+                    System.out.println("Unknown command, please use one of the displayed commands");
             }
 
         }

@@ -26,22 +26,33 @@ public class StudentMenu extends BaseMenu{
                         Student newStudent = manager.addStudent(input[1]);
                         System.out.println("Student '" + newStudent.toString() +  " added.");
                     } else {
-                        System.out.println("Invalid input, please use the exact format 'as, name'");
+                        System.out.println("Invalid input, please use the exact format 'add, name'");
                     }
                     break;
                 case "all":                          // show all students
                     printStudents();
                     break;
-                case "edit":                          // enroll student
-                    if (input.length == 2) {
-                        startEditStudentMenu(input, Integer.parseInt(input[1]));
-                    } else {
-                        System.out.println("Invalid input, please use the exact format 'edit, id'");
+
+                case "edit":
+                    try {
+                        if (input.length == 2) {
+                            startEditStudentMenu(input, Integer.parseInt(input[1]));
+                        } else {
+                            System.out.println("Invalid input, please use the exact format 'edit, id'");
+                        }
+                    } catch (NumberFormatException e){
+                        System.out.println("Invalid input, please only use numerical IDs!");
+                    } catch (StudentNotFoundException e){
+                        System.out.println("Error: " + e.getMessage());
                     }
                     break;
+
                 case "back":
                     exit = true;
                     break;
+
+                default:
+                    System.out.println("Unknown command, please use one of the displayed commands");
             }
         }
     }
@@ -54,16 +65,22 @@ public class StudentMenu extends BaseMenu{
             System.out.println("\n----Editing " + selectedStudent.toString() + "----");
             System.out.println("""   
                     
-                    Show all information: info 
+                    Show all information: info
                     Enroll in module: enroll, ModuleID
                     Add grade: grade, ModuleID, Grade
+                    Delete Student: delete
                     Return to main menu: back
                     """);
             input = sc.nextLine().split(", ");
             switch(input[0]) {
                 case "info":
                     printEnrollments(selectedStudent);
+                    if (selectedStudent.getAverageGrade() == 0.0){
+                        System.out.println("No grades entered yet");
+                    }
+                    System.out.println("Average grade: " + selectedStudent.getAverageGrade());
                     break;
+
                 case "enroll":      // enroll student
                     if (input.length == 2) {
                         try {
@@ -80,6 +97,7 @@ public class StudentMenu extends BaseMenu{
                         System.out.println("Invalid input, please use the exact format 'edit, ModuleID'");
                     }
                     break;
+
                 case "grade":
                     if (input.length == 3) {
                         try {
@@ -105,9 +123,29 @@ public class StudentMenu extends BaseMenu{
                         System.out.println("Invalid input, please use the exact format 'grade, ModuleID, Grade'");
                     }
                     break;
+
+                case "delete":
+                    System.out.println("Do you really want to delete student " + selectedStudent.toString() +
+                            "? This cannot be reversed. y/n");
+                    if (readInput()[0].equals("y")){
+                        try {
+                            manager.deleteStudent(studentID);
+                            System.out.println("Successfully deleted student " + selectedStudent.toString());
+                            return;
+                        } catch (StudentNotFoundException e) {
+                            System.out.println("Error: " + e.getMessage());
+                        }
+                    } else {
+                        System.out.println("Deletion aborted");
+                    }
+                    break;
+
                 case "back":
                     exitSubmenu = true;
                     break;
+
+                default:
+                    System.out.println("Unknown command, please use one of the displayed commands");
             }
         }
     }

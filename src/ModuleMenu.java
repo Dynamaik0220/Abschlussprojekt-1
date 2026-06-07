@@ -26,9 +26,11 @@ public class ModuleMenu extends BaseMenu {
                         System.out.println("Invalid input, please use the exact format 'as, name'");
                     }
                     break;
+
                 case "all":                          // show all Modules
                     printModules();
                     break;
+
                 case "edit":                          // enroll student
                     if (input.length == 2) {
                         startEditModuleMenu(input, Integer.parseInt(input[1]));
@@ -36,9 +38,13 @@ public class ModuleMenu extends BaseMenu {
                         System.out.println("Invalid input, please use the exact format 'edit, id'");
                     }
                     break;
+
                 case "back":
                     exit = true;
                     break;
+
+                default:
+                    System.out.println("Unknown command, please use one of the displayed commands");
             }
         }
     }
@@ -69,9 +75,13 @@ public class ModuleMenu extends BaseMenu {
                         System.out.println("Invalid input, please use the exact format 'edit, ModuleID'");
                     }
                     break;
-                case "break":
+
+                case "back":
                     exitSubmenu = true;
                     break;
+
+                default:
+                    System.out.println("Unknown command, please use one of the displayed commands");
             }
         }
     }

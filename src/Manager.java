@@ -56,6 +56,14 @@ public class Manager {
         return newStudent;
     }
 
+    public void deleteStudent(int studentID){
+        Student studentToDelete = getStudentById(studentID);
+        if (studentToDelete == null){
+            throw new StudentNotFoundException("Student with ID " + studentID + " not found");
+        }
+        students.remove(studentID);
+    }
+
     public Module addModule(String name){
         Module newModule = new Module(name);
         modules.put(newModule.getId(), newModule);

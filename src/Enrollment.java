@@ -17,6 +17,7 @@ public class Enrollment {
         this.student = student;
         this.module = module;
         this.grade = grade;
+        this.passed =  (grade <= 4.0 && grade >= 1.0);
     }
 
     public double getGrade(){
