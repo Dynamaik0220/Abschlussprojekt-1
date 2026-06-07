@@ -5,7 +5,7 @@ public class Student {
     private int id;
     private static int idTracker = 1;
     private String name;
-    List<Enrollment> enrollmentList;
+    private List<Enrollment> enrollmentList;
 
     // Constructor for new students
     Student(String name){
@@ -18,17 +18,13 @@ public class Student {
     Student(int id, String name) {
         this.id = id;
         this.name = name;
+        this.enrollmentList = new ArrayList<>();
 
-        if (id >= idTracker) {      // to prevent the idTracker from resetting
+        if (id >= idTracker) {      // to prevent idTracker from resetting and overwriting students
             idTracker = id + 1;
         }
     }
 
-    public void printEnrollmentList(){
-        for (Enrollment enrollment : enrollmentList){
-            System.out.println(enrollment.module.getName());
-        }
-    }
     public int getId() {
         return id;
     }
@@ -41,7 +37,10 @@ public class Student {
         return enrollmentList;
     }
 
-
+    @Override
+    public String toString(){
+        return (getName() + " (ID: " + getId() + ")");
+    }
 
     public void addEnrollment(Enrollment newEnrollment){
         this.enrollmentList.add(newEnrollment);

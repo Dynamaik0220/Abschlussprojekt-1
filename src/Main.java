@@ -4,11 +4,15 @@ public class Main {
 
     public static void main(String[] args) {
         Manager manager = new Manager();
-        ConsoleMenu menu = new ConsoleMenu(manager);
+        MainMenu mainMenu = new MainMenu(manager);
         FileHandler fileHandler = new FileHandler();
 
         fileHandler.loadStudents(manager);
-        menu.startMenu();
+        fileHandler.loadModules(manager);
+        fileHandler.loadEnrollments(manager);
+        mainMenu.start();
         fileHandler.saveStudents(manager.getStudents().values());
+        fileHandler.saveModules(manager.getModules().values());
+        fileHandler.saveEnrollments(manager.getStudents().values());
     }
 }

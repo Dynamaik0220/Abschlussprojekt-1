@@ -15,10 +15,10 @@ public class FileHandler {
                 writer.write(line);   // Schreibt die Zeile in die Datei
                 writer.newLine();     // Macht einen Zeilenumbruch (Enter)
             }
-            System.out.println("Daten erfolgreich gespeichert!");
+            System.out.println("Students saved successfully!");
 
         } catch (IOException e) {
-            System.out.println("Kritischer Fehler beim Speichern: " + e.getMessage());
+            System.out.println("Critical error during saving students: " + e.getMessage());
         }
     }
 
@@ -38,10 +38,98 @@ public class FileHandler {
                 // Wir übergeben ID und Name an die Uni, um den Studenten zu rekonstruieren
                 manager.loadStudentFromDatabase(id, name);
             }
-            System.out.println("Daten erfolgreich geladen!");
+            System.out.println("Students successfully loaded!");
 
         } catch (IOException e) {
-            System.out.println("Keine alte Speicherdatei gefunden. Starte mit leerem System.");
+            System.out.println("No saved students found.");
         }
+    }
+
+    public void saveModules(Collection<Module> modules) {
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("modules.csv"))) {
+
+            for (Module m : modules) {
+                String line = m.getId() + "," + m.getName();
+
+                writer.write(line);
+                writer.newLine();
+            }
+            System.out.println("Modules saved successfully!");
+
+        } catch (IOException e) {
+            System.out.println("Critical error during saving modules: " + e.getMessage());
+        }
+    }
+
+    public void loadModules(Manager manager) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("modules.csv"))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+
+                String[] parts = line.split(",");
+
+                int id = Integer.parseInt(parts[0]);
+                String name = parts[1];
+
+                manager.loadModuleFromDatabase(id, name);
+            }
+            System.out.println("Modules successfully loaded!");
+
+        } catch (IOException e) {
+            System.out.println("No saved modules found.");
+        }
+    }
+
+    public void saveEnrollments(Collection<Student> students) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("enrollments.csv"))) {
+            for (Student s : students) {
+                for (Enrollment e : s.getEnrollmentList()) {
+                    int studentId = s.getId();
+                    int moduleId = e.module.getId();
+                    double grade = e.getGrade();
+
+                    String line = studentId + ", " + moduleId + ", " + grade;
+
+                    writer.write(line);
+                    writer.newLine();
+                }
+            }
+            System.out.println("Enrollments saved successfully!");
+
+        } catch (IOException e) {
+            System.out.println("Critical error during saving enrollments: " + e.getMessage());
+        }
+    }
+
+    public void loadEnrollments(Manager manager){
+        try (BufferedReader reader = new BufferedReader(new FileReader("enrollments.csv"))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+
+                String[] parts = line.split(", ");
+
+                int studentId = Integer.parseInt(parts[0]);
+                int moduleId = Integer.parseInt(parts[1]);
+                double grade = Double.parseDouble(parts[2]);
+
+                manager.loadEnrollmentFromDatabase(studentId, moduleId, grade);
+            }
+            System.out.println("Enrollments successfully loaded!");
+        } catch (IOException e) {
+            System.out.println("No saved enrollments found.");
+        }
+    }
+
+    public void saveAll(Collection<Student> students, Collection<Module> modules){
+        saveStudents(students);
+        saveModules(modules);
+    }
+
+    public void loadAll(Manager manager){
+        loadStudents(manager);
+        loadModules(manager);
     }
 }

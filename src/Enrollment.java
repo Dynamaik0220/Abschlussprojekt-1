@@ -4,16 +4,34 @@ public class Enrollment {
     double grade;
     boolean passed;
 
+    // new Enrollments
     Enrollment(Student student, Module module){
         this.student = student;
         this.module = module;
         this.passed = false;
+        this.grade = 0.0;       // default 0.0 to indicate no grade yet
     }
-    public void addGrade(double grade){
-        if ((grade >= 1.0 && grade <= 4.0) || grade == 5.0){
-            this.grade = grade;
-        } else {
-            throw new InvalidGradeException("Invalid grade, please enter a grade between 1.0 and 4.0, or the grade 5.0");
-        }
+
+    // saved Enrollments
+    Enrollment(Student student, Module module, double grade){
+        this.student = student;
+        this.module = module;
+        this.grade = grade;
+    }
+
+    public double getGrade(){
+        return grade;
+    }
+
+    public boolean isPassed(){
+        return passed;
+    }
+
+    public void setPassed(boolean passed){
+        this.passed = passed;
+    }
+
+    public void setGrade(double grade) {
+        this.grade = grade;
     }
 }

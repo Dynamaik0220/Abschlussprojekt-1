@@ -7,7 +7,7 @@ class Student {
 + double getAverageGrade()
 + String toCSV()
 }
-class Module {
+class  {
 - int id
 - String name
 - List<Enrollment> enrollments
