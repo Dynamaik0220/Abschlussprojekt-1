@@ -48,6 +48,7 @@ public class Manager {
         Module loadedModule = getModuleById(moduleId);
         Enrollment savedEnrollment = new Enrollment(loadedStudent, loadedModule, grade);
         loadedStudent.addEnrollment(savedEnrollment);
+        loadedModule.addEnrollment(savedEnrollment);
     }
 
     public Student addStudent(String name){
@@ -61,7 +62,27 @@ public class Manager {
         if (studentToDelete == null){
             throw new StudentNotFoundException("Student with ID " + studentID + " not found");
         }
+
+        for (Enrollment enrollment : studentToDelete.getEnrollments()) {
+            Module module = enrollment.getModule();
+            module.getEnrollments().remove(enrollment);
+        }
+
         students.remove(studentID);
+    }
+
+    public void deleteModule(int moduleID){
+        Module moduleToDelete = getModuleById(moduleID);
+        if (moduleToDelete == null){
+            throw new ModuleNotFoundException("Module with ID " + moduleID + " not found");
+        }
+
+        for (Enrollment enrollment : moduleToDelete.getEnrollments()) {
+            Student student = enrollment.getStudent();
+            student.getEnrollments().remove(enrollment);
+        }
+
+        modules.remove(moduleID);
     }
 
     public Module addModule(String name){
@@ -76,12 +97,13 @@ public class Manager {
         Module module = getModuleById(moduleID);
 
         for (Enrollment enrollment : student.getEnrollments())
-            if (enrollment.module.getId() == moduleID) {
+            if (enrollment.getModule().getId() == moduleID) {
                 throw new DuplicateEnrollmentException("Student is already enrolled in that module.");
             }
 
         Enrollment newEnrollment = new Enrollment(student, module);
         student.addEnrollment(newEnrollment);
+        module.addEnrollment(newEnrollment);
         return newEnrollment;
     }
 
@@ -93,7 +115,7 @@ public class Manager {
                 throw new ModuleNotFoundException("This student is not enrolled in any modules.");
             }
             for (Enrollment enrollment : student.getEnrollments()) {
-                if (enrollment.module.getId() == moduleId){
+                if (enrollment.getModule().getId() == moduleId){
                     enrollment.setGrade(grade);
                     enrollment.setPassed(grade != 5.0);
                     return;

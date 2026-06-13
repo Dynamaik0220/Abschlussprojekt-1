@@ -161,7 +161,7 @@ public class StudentMenu extends BaseMenu{
         if (input.length == 2) {
             try {
                 Enrollment newEnrollment = manager.enrollStudent(studentID, Integer.parseInt(input[1]));
-                System.out.println(newEnrollment.student.toString() + " successfully enrolled in module " + newEnrollment.module.getName());
+                System.out.println(newEnrollment.getStudent().toString() + " successfully enrolled in module " + newEnrollment.getModule().getName());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, please only use numerical IDs!");
             } catch (ModuleNotFoundException e) {
@@ -191,13 +191,13 @@ public class StudentMenu extends BaseMenu{
         }
         for (Enrollment enrollment : enrollments){
             double grade = enrollment.getGrade();
-            int id = enrollment.module.getId();
+            String moduleName = enrollment.getModule().toString();
             if (grade == 0.0) {
-                System.out.println("Module: "+ enrollment.module.getName() + " (ID: " + id +  ") - No grade yet");
+                System.out.println("Module: "+ moduleName +  " - No grade yet");
             } else if (!enrollment.isPassed()){
-                System.out.println("Module: "+ enrollment.module.getName() + " (ID: " + id +  ") - Failed with 5.0");
+                System.out.println("Module: "+ moduleName +  " - Failed with 5.0");
             } else {
-                System.out.println("Module: "+ enrollment.module.getName() + " (ID: " + id +  ") - Passed with " + grade);
+                System.out.println("Module: "+ moduleName +  " - Passed with " + grade);
             }
         }
     }

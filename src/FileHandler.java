@@ -87,7 +87,7 @@ public class FileHandler {
             for (Student s : students) {
                 for (Enrollment e : s.getEnrollments()) {
                     int studentId = s.getId();
-                    int moduleId = e.module.getId();
+                    int moduleId = e.getModule().getId();
                     double grade = e.getGrade();
 
                     String line = studentId + ", " + moduleId + ", " + grade;

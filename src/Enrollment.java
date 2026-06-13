@@ -1,6 +1,6 @@
 public class Enrollment {
-    Student student;
-    Module module;
+    private Student student;
+    private Module module;
     double grade;
     boolean passed;
 
@@ -22,6 +22,14 @@ public class Enrollment {
 
     public double getGrade(){
         return grade;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public Module getModule() {
+        return module;
     }
 
     public boolean isPassed(){
