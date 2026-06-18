@@ -142,11 +142,15 @@ public class ModuleMenu extends BaseMenu {
 
     private void showInfo(Module selectedModule) {
         printEnrollments(selectedModule);
-        if (selectedModule.getAverageGrade() == 0.0){
-            System.out.println("No grades entered yet");
+        if (!selectedModule.getEnrollments().isEmpty()) {  // not empty
+            if (selectedModule.getAverageGrade() == 0.0){
+                System.out.println("No grades entered yet");
+            } else {
+                System.out.println("Average grade: " + selectedModule.getAverageGrade());
+            }
         }
-        System.out.println("Average grade: " + selectedModule.getAverageGrade());
     }
+
 
     public void printEnrollments(Module module){
         List<Enrollment> enrollments = module.getEnrollments();

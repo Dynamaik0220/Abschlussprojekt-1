@@ -116,6 +116,8 @@ public class FileHandler {
             System.out.println("Enrollments successfully loaded!");
         } catch (IOException e) {
             System.out.println("No saved enrollments found.");
+        } catch (StudentNotFoundException | ModuleNotFoundException e){
+            System.out.println("Critical error during loading of enrollments: " + e);
         }
     }
 

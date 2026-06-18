@@ -5,7 +5,7 @@ public class Module {
     private int id;
     private static int idTracker = 1;
     private String name;
-    List<Enrollment> enrollments;
+    private List<Enrollment> enrollments;
 
 
     Module(String name){
@@ -37,7 +37,7 @@ public class Module {
         return enrollments;
     }
 
-    double getAverageGrade() {
+    public double getAverageGrade() {
         double sum = 0.0;
         int gradeCount = 0;
         for (Enrollment e : enrollments) {
