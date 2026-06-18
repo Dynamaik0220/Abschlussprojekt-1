@@ -102,7 +102,7 @@ public class Manager {
         if ((grade >= 1.0 && grade <= 4.0) || grade == 5.0){
             Student student = getStudentById(studentID);
             if (student.getEnrollments().isEmpty()) {
-                throw new ModuleNotFoundException("This student is not enrolled in any modules.");
+                throw new StudentNotFoundException("This student is not enrolled in any modules.");
             }
             for (Enrollment enrollment : student.getEnrollments()) {
                 if (enrollment.getModule().getId() == moduleId){

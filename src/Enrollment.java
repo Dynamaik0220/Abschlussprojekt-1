@@ -1,8 +1,8 @@
 public class Enrollment {
     private Student student;
     private Module module;
-    double grade;
-    boolean passed;
+    private double grade;
+    private boolean passed;
 
     // new Enrollments
     Enrollment(Student student, Module module){

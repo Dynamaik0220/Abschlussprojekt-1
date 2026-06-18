@@ -61,9 +61,8 @@ public class ModuleMenu extends BaseMenu {
             Module newModule = manager.addModule(input[1]);
             System.out.println("Module '" + newModule.getName() + "' (ID: " + newModule.getId() + ") added.");
         } else {
-            System.out.println("Invalid input, please use the exact format 'as, name'");
+            System.out.println("Invalid input, please use the exact format 'add, name'");
         }
-        return;
     }
 
     public void startManageModuleMenu(String[] input, int moduleID) {
@@ -76,6 +75,7 @@ public class ModuleMenu extends BaseMenu {
                     Show all information: info
                     Enroll student in Module: enroll, StudentID
                     Add grade: grade, StudentID, Grade
+                    Delete Module: delete
                     Return to main menu: back
                     """);
             input = sc.nextLine().split(", ");
@@ -186,9 +186,9 @@ public class ModuleMenu extends BaseMenu {
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, please only use numerical IDs and grades!");
             } catch (StudentNotFoundException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error: " + e.getMessage());
             } catch (InvalidGradeException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error: " + e.getMessage());
             }
         } else {
             System.out.println("Invalid input, please use the exact format 'grade, StudentID, Grade'");

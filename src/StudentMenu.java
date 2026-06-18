@@ -148,9 +148,9 @@ public class StudentMenu extends BaseMenu{
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, please only use numerical IDs and grades!");
             } catch (ModuleNotFoundException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error: " + e.getMessage());
             } catch (InvalidGradeException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error: " + e.getMessage());
             }
         } else {
             System.out.println("Invalid input, please use the exact format 'grade, ModuleID, Grade'");
