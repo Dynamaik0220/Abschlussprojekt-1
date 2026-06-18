@@ -170,16 +170,19 @@ public class StudentMenu extends BaseMenu{
                 System.out.println("Error: " + e.getMessage());
             }
         } else {
-            System.out.println("Invalid input, please use the exact format 'manage, ModuleID'");
+            System.out.println("Invalid input, please use the exact format 'enroll, ModuleID'");
         }
     }
 
     private void showInfo(Student selectedStudent) {
         printEnrollments(selectedStudent);
-        if (selectedStudent.getAverageGrade() == 0.0){
-            System.out.println("No grades entered yet");
+        if (!selectedStudent.getEnrollments().isEmpty()) {  // not empty
+            if (selectedStudent.getAverageGrade() == 0.0){
+                System.out.println("No grades entered yet");
+            } else {
+                System.out.println("Average grade: " + selectedStudent.getAverageGrade());
+            }
         }
-        System.out.println("Average grade: " + selectedStudent.getAverageGrade());
     }
 
     public void printEnrollments(Student student){

@@ -59,29 +59,19 @@ public class Manager {
 
     public void deleteStudent(int studentID){
         Student studentToDelete = getStudentById(studentID);
-        if (studentToDelete == null){
-            throw new StudentNotFoundException("Student with ID " + studentID + " not found");
-        }
-
         for (Enrollment enrollment : studentToDelete.getEnrollments()) {
             Module module = enrollment.getModule();
             module.getEnrollments().remove(enrollment);
         }
-
         students.remove(studentID);
     }
 
     public void deleteModule(int moduleID){
         Module moduleToDelete = getModuleById(moduleID);
-        if (moduleToDelete == null){
-            throw new ModuleNotFoundException("Module with ID " + moduleID + " not found");
-        }
-
         for (Enrollment enrollment : moduleToDelete.getEnrollments()) {
             Student student = enrollment.getStudent();
             student.getEnrollments().remove(enrollment);
         }
-
         modules.remove(moduleID);
     }
 
