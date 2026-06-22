@@ -195,11 +195,11 @@ public class ModuleMenu extends BaseMenu {
             Double grade = enrollment.getGrade();
             String studentName = enrollment.getStudent().toString();
             if (grade == null) {
-                System.out.println("Student: " + studentName + " - No grade yet");
+                System.out.println("- Student: " + studentName + " - No grade yet");
             } else if (!enrollment.isPassed()) {
-                System.out.println("Student: " + studentName + " - Failed with 5.0");
+                System.out.println("- Student: " + studentName + " - Failed with 5.0");
             } else {
-                System.out.println("Student: " + studentName + " - Passed with " + grade);
+                System.out.println("- Student: " + studentName + " - Passed with " + grade);
             }
         }
 
@@ -215,6 +215,14 @@ public class ModuleMenu extends BaseMenu {
             try {
                 int studentID = Integer.parseInt(input[1]);
                 double grade = Double.parseDouble(input[2]);
+                if (manager.hasGrade(studentID, moduleID)){
+                    System.out.print("A grade has already been entered for this student. Are you sure you want to overwrite it? (y/n): ");
+                    String confirmation = readInput()[0];
+                    if (!confirmation.equals("y")) {
+                        System.out.println("Grade overwrite cancelled.");
+                        return;
+                    }
+                }
                 manager.setEnrollmentGrade(studentID, moduleID, grade);
                 if (grade == 5.0) {
                     System.out.println("Successfully added failing grade 5.0 for student "

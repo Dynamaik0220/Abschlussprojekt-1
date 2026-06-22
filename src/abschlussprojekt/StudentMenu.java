@@ -172,9 +172,16 @@ public class StudentMenu extends BaseMenu{
             try {
                 int moduleID = Integer.parseInt(input[1]);
                 double grade = Double.parseDouble(input[2]);
+                if (manager.hasGrade(studentID, moduleID)){
+                    System.out.print("A grade has already been entered for this module. Are you sure you want to overwrite it? (y/n): ");
+                    String confirmation = readInput()[0];
+                    if (!confirmation.equals("y")) {
+                        System.out.println("Grade overwrite cancelled.");
+                        return;
+                    }
+                }
                 manager.setEnrollmentGrade(studentID, moduleID, grade);
                 if (grade == 5.0) {
-
                     System.out.println("Successfully added failing grade 5.0 for module "
                             + manager.getModuleByID(moduleID).toString());
                 } else {
@@ -244,11 +251,11 @@ public class StudentMenu extends BaseMenu{
             Double grade = enrollment.getGrade();
             String moduleName = enrollment.getModule().toString();
             if (grade == null) {
-                System.out.println("Module: " + moduleName + " - No grade yet");
+                System.out.println("- Module: " + moduleName + " - No grade yet");
             } else if (!enrollment.isPassed()) {
-                System.out.println("Module: " + moduleName + " - Failed with 5.0");
+                System.out.println("- Module: " + moduleName + " - Failed with 5.0");
             } else {
-                System.out.println("Module: " + moduleName + " - Passed with " + grade);
+                System.out.println("- Module: " + moduleName + " - Passed with " + grade);
             }
         }
         if (selectedStudent.getAverageGrade() == null) {
