@@ -122,6 +122,16 @@ public class Manager {
         }
     }
 
+    public boolean hasGrade(int studentID, int moduleID)
+        throws StudentNotFoundException, ModuleNotFoundException {
+        Student student = getStudentByID(studentID);
+        for (Enrollment enrollment : student.getEnrollments()) {
+            if (enrollment.getModule().getID() == moduleID) {
+                return enrollment.getGrade() != null;
+            }
+        } throw new ModuleNotFoundException("This student is not enrolled in that module.");
+    }
+
     public void unenrollStudent(int studentID, int moduleID)
             throws StudentNotFoundException, ModuleNotFoundException {
 

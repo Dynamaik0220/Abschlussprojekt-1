@@ -183,6 +183,7 @@ public class ModuleMenu extends BaseMenu {
     }
 
     private void showInfo(Module selectedModule) {
+        System.out.println("Information regarding module " + selectedModule.toString() + ":");
         List<Enrollment> enrollments = selectedModule.getEnrollments();
 
         if (enrollments.isEmpty()) {
@@ -205,7 +206,7 @@ public class ModuleMenu extends BaseMenu {
         if (selectedModule.getAverageGrade() == null) {
             System.out.println("No grades entered yet");
         } else {
-            System.out.printf("Average grade: %.2f", selectedModule.getAverageGrade());
+            System.out.printf("Average grade: %.2f\n" , selectedModule.getAverageGrade());
         }
     }
 
@@ -236,6 +237,15 @@ public class ModuleMenu extends BaseMenu {
         if (input.length == 2) {
             try {
                 int studentID = Integer.parseInt(input[1]);
+
+                if (manager.hasGrade(studentID, moduleID)){
+                    System.out.print("A grade has already been entered for this student. Are you sure you want to unenroll them? (y/n): ");
+                    String confirmation = readInput()[0];
+                    if (!confirmation.equals("y")) {
+                        System.out.println("Unenrollment cancelled.");
+                        return;
+                    }
+                }
                 manager.unenrollStudent(studentID, moduleID);
                 System.out.println("Student "+ manager.getStudentByID(studentID).toString() + " successfully unenrolled from module.");
             } catch (NumberFormatException e) {

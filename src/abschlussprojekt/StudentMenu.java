@@ -210,6 +210,15 @@ public class StudentMenu extends BaseMenu{
         if (input.length == 2) {
             try {
                 int moduleID = Integer.parseInt(input[1]);
+
+                if (manager.hasGrade(studentID, moduleID)){
+                    System.out.print("A grade has already been entered for this student. Are you sure you want to unenroll them? (y/n): ");
+                    String confirmation = readInput()[0];
+                    if (!confirmation.equals("y")) {
+                        System.out.println("Unenrollment cancelled.");
+                        return;
+                    }
+                }
                 manager.unenrollStudent(studentID, moduleID);
                 System.out.println("Student successfully unenrolled from module " + manager.getModuleByID(moduleID).toString());
             } catch (NumberFormatException e) {
@@ -245,7 +254,7 @@ public class StudentMenu extends BaseMenu{
         if (selectedStudent.getAverageGrade() == null) {
             System.out.println("No grades entered yet");
         } else {
-            System.out.printf("GPA: %.2f", selectedStudent.getAverageGrade());
+            System.out.printf("GPA: %.2f\n", selectedStudent.getAverageGrade());
         }
     }
 }
