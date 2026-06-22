@@ -1,3 +1,5 @@
+package abschlussprojekt;
+
 import java.io.*;
 import java.util.Collection;
 
@@ -7,7 +9,7 @@ public class FileHandler {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("students.csv"))) {
 
             for (Student s : students) {
-                String line = s.getId() + "," + s.getName();
+                String line = s.getID() + "," + s.getName();
 
                 writer.write(line);
                 writer.newLine();
@@ -15,7 +17,7 @@ public class FileHandler {
             System.out.println("Students saved successfully!");
 
         } catch (IOException e) {
-            System.out.println("Critical error during saving students: " + e.getMessage());
+            System.out.println("Critical error during saving of students: " + e.getMessage());
         }
     }
 
@@ -38,6 +40,8 @@ public class FileHandler {
 
         } catch (IOException e) {
             System.out.println("No saved students found.");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Critical error during loading of students: " + e.getMessage());
         }
     }
 
@@ -46,7 +50,7 @@ public class FileHandler {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("modules.csv"))) {
 
             for (Module m : modules) {
-                String line = m.getId() + "," + m.getName();
+                String line = m.getID() + "," + m.getName();
 
                 writer.write(line);
                 writer.newLine();
@@ -54,7 +58,7 @@ public class FileHandler {
             System.out.println("Modules saved successfully!");
 
         } catch (IOException e) {
-            System.out.println("Critical error during saving modules: " + e.getMessage());
+            System.out.println("Critical error during saving of modules: " + e.getMessage());
         }
     }
 
@@ -75,6 +79,8 @@ public class FileHandler {
 
         } catch (IOException e) {
             System.out.println("No saved modules found.");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Critical error during loading of models: " + e.getMessage());
         }
     }
 
@@ -82,11 +88,16 @@ public class FileHandler {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("enrollments.csv"))) {
             for (Student s : students) {
                 for (Enrollment e : s.getEnrollments()) {
-                    int studentId = s.getId();
-                    int moduleId = e.getModule().getId();
-                    double grade = e.getGrade();
+                    int studentID = s.getID();
+                    int moduleID = e.getModule().getID();
+                    Double grade = e.getGrade();
+                    String line;
 
-                    String line = studentId + "," + moduleId + "," + grade;
+                    if (grade == null) {
+                        line = studentID + "," + moduleID + ",null";
+                    } else {
+                        line = studentID + "," + moduleID + "," + grade;
+                    }
 
                     writer.write(line);
                     writer.newLine();
@@ -95,7 +106,7 @@ public class FileHandler {
             System.out.println("Enrollments saved successfully!");
 
         } catch (IOException e) {
-            System.out.println("Critical error during saving enrollments: " + e.getMessage());
+            System.out.println("Critical error during saving of enrollments: " + e.getMessage());
         }
     }
 
@@ -107,29 +118,21 @@ public class FileHandler {
 
                 String[] parts = line.split(",");
 
-                int studentId = Integer.parseInt(parts[0]);
-                int moduleId = Integer.parseInt(parts[1]);
-                double grade = Double.parseDouble(parts[2]);
+                int studentID = Integer.parseInt(parts[0]);
+                int moduleID = Integer.parseInt(parts[1]);
+                String gradeString = parts[2];
+                Double grade = null;
+                if (!gradeString.equals("null")) {
+                    grade = Double.parseDouble(gradeString);
+                }
 
-                manager.loadEnrollmentFromDatabase(studentId, moduleId, grade);
+                manager.loadEnrollmentFromDatabase(studentID, moduleID, grade);
             }
             System.out.println("Enrollments successfully loaded!");
         } catch (IOException e) {
             System.out.println("No saved enrollments found.");
-        } catch (StudentNotFoundException | ModuleNotFoundException e){
-            System.out.println("Critical error during loading of enrollments: " + e);
+        } catch (StudentNotFoundException | ModuleNotFoundException | ArrayIndexOutOfBoundsException e){
+            System.out.println("Critical error during loading of enrollments: " + e.getMessage());
         }
-    }
-
-    public void saveAll(Collection<Student> students, Collection<Module> modules){
-        saveStudents(students);
-        saveModules(modules);
-        saveEnrollments(students);
-    }
-
-    public void loadAll(Manager manager){
-        loadStudents(manager);
-        loadModules(manager);
-        loadEnrollments(manager);
     }
 }

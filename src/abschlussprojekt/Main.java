@@ -1,4 +1,4 @@
-import java.util.Collection;
+package abschlussprojekt;
 
 public class Main {
 

@@ -1,9 +1,11 @@
+package abschlussprojekt;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Module {
     private int id;
-    private static int idTracker = 1;
+    private static int idTracker = 101;
     private String name;
     private List<Enrollment> enrollments;
 
@@ -25,7 +27,7 @@ public class Module {
         }
     }
 
-    public int getId(){
+    public int getID(){
         return id;
     }
 
@@ -37,24 +39,34 @@ public class Module {
         return enrollments;
     }
 
-    public double getAverageGrade() {
+    public Double getAverageGrade() {
         double sum = 0.0;
         int gradeCount = 0;
         for (Enrollment e : enrollments) {
-            if (e.getGrade() != 0.0) {
+            if (e.getGrade() != null) {
                 sum += e.getGrade();
                 gradeCount++;
             }
         }
-        if (sum == 0.0){
-            return 0.0;
+        if (gradeCount == 0){
+            return null;
         }
         return (sum / gradeCount);
     }
 
     @Override
-    public String toString(){
-        return (getName() + " (ID: " + getId() + ")");
+    public String toString() {
+        return (getName() + " (ID: " + getID() + ")");
+    }
+
+    public String toStringLong() {
+        if (getAverageGrade() == null) {
+            // 30 spaces for name (left alligned), 3 for id (right alligned)
+            return String.format("%-30s (ID: %3s) | no grades yet", getName(), getID());
+        } else {
+            // 2 decimals for average grade
+            return String.format("%-30s (ID: %3s) | Average grade: %.2f", getName(), getID(), getAverageGrade());
+        }
     }
 
     public void addEnrollment(Enrollment newEnrollment){

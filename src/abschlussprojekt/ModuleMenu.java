@@ -1,3 +1,5 @@
+package abschlussprojekt;
+
 import java.util.List;
 
 public class ModuleMenu extends BaseMenu {
@@ -11,12 +13,15 @@ public class ModuleMenu extends BaseMenu {
         boolean exit = false;
         while (!exit) {
             System.out.println("""
+                
                 ----Module Submenu----
                 
-                Show all modules: all
-                Add module: add, Name
-                View and manage module: manage, id
-                Return to main menu: back
+                Show all modules by id:     all
+                                 by name:   all, name
+                                 by grade:  all, grade
+                Add module:                 add, Name
+                View and manage module:     manage, id
+                Return to main menu:        back
                 """);
             String[] input = readInput();
             switch (input[0]) {
@@ -25,7 +30,7 @@ public class ModuleMenu extends BaseMenu {
                     break;
 
                 case "all":                          // show all Modules
-                    printModules();
+                    handleAllCommand(input);
                     break;
 
                 case "manage":                          // enroll student
@@ -38,6 +43,32 @@ public class ModuleMenu extends BaseMenu {
 
                 default:
                     System.out.println("Unknown command, please use one of the displayed commands");
+            }
+        }
+    }
+
+    private void handleAllCommand(String[] input) {
+        if (input.length == 2) {
+            switch (input[1]) {
+                case "name":
+                    for (Module module : manager.getModulesSortedByName()) {
+                        System.out.println("- " + module.toStringLong());
+                    }
+                    break;
+
+                case "grade":
+                    for (Module module : manager.getModulesSortedByGrade()) {
+                        System.out.println("- " + module.toStringLong());
+                    }
+                    break;
+
+                default:
+                    System.out.println("Unknown command, please use one of the displayed commands");
+                    break;
+            }
+        } else {
+            for (Module module : manager.getModules().values()) {
+                System.out.println("- " + module.toStringLong());
             }
         }
     }
@@ -59,7 +90,7 @@ public class ModuleMenu extends BaseMenu {
     private void handleAddCommand(String[] input) {
         if (input.length == 2) {
             Module newModule = manager.addModule(input[1]);
-            System.out.println("Module '" + newModule.getName() + "' (ID: " + newModule.getId() + ") added.");
+            System.out.println("Module '" + newModule.getName() + "' (ID: " + newModule.getID() + ") added.");
         } else {
             System.out.println("Invalid input, please use the exact format 'add, name'");
         }
@@ -67,27 +98,31 @@ public class ModuleMenu extends BaseMenu {
 
     public void startManageModuleMenu(String[] input, int moduleID) {
         boolean exitSubmenu = false;
-        Module selectedModule = manager.getModuleById(moduleID);
+        Module selectedModule = manager.getModuleByID(moduleID);
 
         while (!exitSubmenu) {
-            System.out.println("----Managing " + selectedModule.getName() + "----");
+            System.out.println("\n----Managing " + selectedModule.toString() + "----");
             System.out.println("""   
-                    Show all information: info
-                    Enroll student in Module: enroll, StudentID
-                    Add grade: grade, StudentID, Grade
-                    Delete Module: delete
-                    Return to main menu: back
+                    
+                    Show all information:       (i)nfo
+                    Enroll student in module:   (e)nroll, StudentID
+                    Add grade:                  (g)rade, StudentID, Grade
+                    Delete module:              delete
+                    Return to main menu:        (b)ack
                     """);
             input = sc.nextLine().split(", ");
             switch(input[0]) {
+                case "i":
                 case "info":
                     showInfo(selectedModule);
                     break;
 
-                case "enroll":      // enroll student
+                case "e":
+                case "enroll":
                     handleEnrollCommand(input, moduleID);
                     break;
 
+                case "g":
                 case "grade":
                     handleGradeCommand(moduleID, input);
                     break;
@@ -96,6 +131,7 @@ public class ModuleMenu extends BaseMenu {
                     if (confirmDeletion(moduleID, selectedModule)) return;
                     break;
 
+                case "b":
                 case "back":
                     exitSubmenu = true;
                     break;
@@ -107,7 +143,7 @@ public class ModuleMenu extends BaseMenu {
     }
 
     private boolean confirmDeletion(int moduleID, Module selectedModule) {
-        System.out.println("Do you really want to delete Module " + selectedModule.toString() +
+        System.out.println("Do you really want to delete module " + selectedModule.toString() +
                 "? This cannot be reversed. y/n");
         if (readInput()[0].equals("y")){
             try {
@@ -127,7 +163,7 @@ public class ModuleMenu extends BaseMenu {
         if (input.length == 2) {
             try {
                 Enrollment newEnrollment = manager.enrollStudent(Integer.parseInt(input[1]), moduleID);
-                System.out.println(newEnrollment.getStudent().toString() + " successfully enrolled in module " + newEnrollment.getModule().getName());
+                System.out.println(newEnrollment.getStudent().toString() + " successfully enrolled in module " + newEnrollment.getModule().toString());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, please only use numerical IDs!");
             } catch (StudentNotFoundException e) {
@@ -143,7 +179,7 @@ public class ModuleMenu extends BaseMenu {
     private void showInfo(Module selectedModule) {
         printEnrollments(selectedModule);
         if (!selectedModule.getEnrollments().isEmpty()) {  // not empty
-            if (selectedModule.getAverageGrade() == 0.0){
+            if (selectedModule.getAverageGrade() == null){
                 System.out.println("No grades entered yet");
             } else {
                 System.out.println("Average grade: " + selectedModule.getAverageGrade());
@@ -181,11 +217,11 @@ public class ModuleMenu extends BaseMenu {
                 manager.setEnrollmentGrade(studentID, moduleID, grade);
                 if (grade == 5.0) {
 
-                    System.out.println("Successfully added failing grade 5.0 for Student "
-                            + manager.getStudentById(studentID).toString());
+                    System.out.println("Successfully added failing grade 5.0 for student "
+                            + manager.getStudentByID(studentID).toString());
                 } else {
-                    System.out.println("Successfully added passing grade " + grade + " for Student "
-                            + manager.getStudentById(studentID).toString());
+                    System.out.println("Successfully added passing grade " + grade + " for student "
+                            + manager.getStudentByID(studentID).toString());
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, please only use numerical IDs and grades!");
@@ -201,7 +237,7 @@ public class ModuleMenu extends BaseMenu {
 
     public void printModules () {
         for (Module module : manager.getModules().values()) {
-            System.out.println("- " + module.getName() + " (ID: " + module.getId() + ")");
+            System.out.println(module.toStringLong());
         }
     }
 }

@@ -1,7 +1,9 @@
+package abschlussprojekt;
+
 public class Enrollment {
     private Student student;
     private Module module;
-    private double grade;
+    private Double grade;       // Wrapper is nullable
     private boolean passed;
 
     // new Enrollments
@@ -9,18 +11,17 @@ public class Enrollment {
         this.student = student;
         this.module = module;
         this.passed = false;
-        this.grade = 0.0;       // default 0.0 to indicate no grade yet
     }
 
     // saved Enrollments
-    Enrollment(Student student, Module module, double grade){
+    Enrollment(Student student, Module module, Double grade){
         this.student = student;
         this.module = module;
         this.grade = grade;
-        this.passed =  (grade <= 4.0 && grade >= 1.0);
+        this.passed = (grade != null && grade <= 4.0 && grade >= 1.0);
     }
 
-    public double getGrade(){
+    public Double getGrade(){
         return grade;
     }
 
