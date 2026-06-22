@@ -24,7 +24,7 @@ public class StudentMenu extends BaseMenu{
                 Return to main menu:                (b)ack
                 """);
             String[] input = readInput();
-            switch (input[0]) {
+            switch (input[0].toLowerCase()) {
                 case "add":
                     handleAddCommand(input);
                     break;
@@ -51,7 +51,7 @@ public class StudentMenu extends BaseMenu{
 
     private void handleAllCommand(String[] input) {
         if (input.length == 2) {
-            switch (input[1]) {
+            switch (input[1].toLowerCase()) {
                 case "name":
                     for (Student student : manager.getStudentsSortedByName()) {
                         System.out.println("- " + student.toStringLong());
@@ -106,13 +106,14 @@ public class StudentMenu extends BaseMenu{
             System.out.println("\n----Managing " + selectedStudent.toString() + "----");
             System.out.println("""   
                     
-                    Show all information: info
-                    Enroll in module: enroll, ModuleID
-                    Add grade: grade, ModuleID, Grade
-                    Delete Student: delete
-                    Return to main menu: back
+                    Show all information:   (i)nfo
+                    Enroll in module:       (e)nroll, 'ModuleID'
+                    Uneroll from module:    (u)nenroll, 'ModuleID'
+                    Add grade:              (g)rade, 'ModuleID', 'Grade'
+                    Delete Student:         delete
+                    Return to main menu:    (b)ack
                     """);
-            String[] input = sc.nextLine().split(", ");
+            String[] input = readInput();
             switch(input[0]) {
                 case "i":
                 case "info":
@@ -122,6 +123,11 @@ public class StudentMenu extends BaseMenu{
                 case "e":
                 case "enroll":      // enroll student
                     handleEnrollCommand(studentID, input);
+                    break;
+
+                case "u":
+                case "unenroll":
+                    handleUnenrollCommand(studentID, input);
                     break;
 
                 case "g":
@@ -177,9 +183,7 @@ public class StudentMenu extends BaseMenu{
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, please only use numerical IDs and grades!");
-            } catch (ModuleNotFoundException e) {
-                System.out.println("Error: " + e.getMessage());
-            } catch (InvalidGradeException e) {
+            } catch (ModuleNotFoundException | InvalidGradeException e) {
                 System.out.println("Error: " + e.getMessage());
             }
         } else {
@@ -194,9 +198,7 @@ public class StudentMenu extends BaseMenu{
                 System.out.println(newEnrollment.getStudent().toString() + " successfully enrolled in module " + newEnrollment.getModule().toString());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, please only use numerical IDs!");
-            } catch (ModuleNotFoundException e) {
-                System.out.println("Error: " + e.getMessage());
-            } catch (DuplicateEnrollmentException e){
+            } catch (ModuleNotFoundException | DuplicateEnrollmentException e) {
                 System.out.println("Error: " + e.getMessage());
             }
         } else {
@@ -204,34 +206,46 @@ public class StudentMenu extends BaseMenu{
         }
     }
 
-    private void showInfo(Student selectedStudent) {
-        printEnrollments(selectedStudent);
-        if (!selectedStudent.getEnrollments().isEmpty()) {  // not empty
-            if (selectedStudent.getAverageGrade() == null){
-                System.out.println("No grades entered yet");
-            } else {
-                System.out.println("Average grade: " + selectedStudent.getAverageGrade());
+    private void handleUnenrollCommand(int studentID, String[] input) {
+        if (input.length == 2) {
+            try {
+                int moduleID = Integer.parseInt(input[1]);
+                manager.unenrollStudent(studentID, moduleID);
+                System.out.println("Student successfully unenrolled from module " + manager.getModuleByID(moduleID).toString());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, please only use numerical IDs!");
+            } catch (ModuleNotFoundException | StudentNotFoundException e) {
+                System.out.println("Error: " + e.getMessage());
             }
+        } else {
+            System.out.println("Invalid input, please use the exact format 'unenroll, ModuleID'");
         }
     }
 
-    public void printEnrollments(Student student){
-        List<Enrollment> enrollments = student.getEnrollments();
+    private void showInfo(Student selectedStudent) {
+        System.out.println("Information regarding student " + selectedStudent.toString() + ":");
+        List<Enrollment> enrollments = selectedStudent.getEnrollments();
 
         if (enrollments.isEmpty()) {
             System.out.println("This student is not enrolled in any modules.");
             return;
         }
-        for (Enrollment enrollment : enrollments){
-            double grade = enrollment.getGrade();
+
+        for (Enrollment enrollment : enrollments) {
+            Double grade = enrollment.getGrade();
             String moduleName = enrollment.getModule().toString();
-            if (grade == 0.0) {
-                System.out.println("Module: "+ moduleName +  " - No grade yet");
-            } else if (!enrollment.isPassed()){
-                System.out.println("Module: "+ moduleName +  " - Failed with 5.0");
+            if (grade == null) {
+                System.out.println("Module: " + moduleName + " - No grade yet");
+            } else if (!enrollment.isPassed()) {
+                System.out.println("Module: " + moduleName + " - Failed with 5.0");
             } else {
-                System.out.println("Module: "+ moduleName +  " - Passed with " + grade);
+                System.out.println("Module: " + moduleName + " - Passed with " + grade);
             }
+        }
+        if (selectedStudent.getAverageGrade() == null) {
+            System.out.println("No grades entered yet");
+        } else {
+            System.out.printf("GPA: %.2f", selectedStudent.getAverageGrade());
         }
     }
 }

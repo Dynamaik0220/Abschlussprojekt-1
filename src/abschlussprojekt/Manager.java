@@ -121,6 +121,29 @@ public class Manager {
             throw new InvalidGradeException("Invalid grade, please enter a grade between 1.0 and 4.0, or the grade 5.0");
         }
     }
+
+    public void unenrollStudent(int studentID, int moduleID)
+            throws StudentNotFoundException, ModuleNotFoundException {
+
+        Student student = getStudentByID(studentID);
+        Module module = getModuleByID(moduleID);
+        Enrollment enrollmentToRemove = null;
+
+        for (Enrollment enrollment : student.getEnrollments()) {
+            if (enrollment.getModule().getID() == moduleID) {
+                enrollmentToRemove = enrollment;
+                break;
+            }
+        }
+
+        if (enrollmentToRemove != null) {
+            student.getEnrollments().remove(enrollmentToRemove);
+            module.getEnrollments().remove(enrollmentToRemove);
+        } else {
+            throw new ModuleNotFoundException("This student is not enrolled in that module");
+        }
+    }
+
     public List<Student> getStudentsSortedByGrade() {
         List<Student> list = new ArrayList<>(students.values());
         // Comparator.nullsLast to put all the nulls at the bottom of the list

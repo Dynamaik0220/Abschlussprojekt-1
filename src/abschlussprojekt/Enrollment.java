@@ -1,8 +1,8 @@
 package abschlussprojekt;
 
 public class Enrollment {
-    private Student student;
-    private Module module;
+    private final Student student;
+    private final Module module;
     private Double grade;       // Wrapper is nullable
     private boolean passed;
 

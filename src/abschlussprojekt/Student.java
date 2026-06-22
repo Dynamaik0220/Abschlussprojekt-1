@@ -61,7 +61,7 @@ public class Student {
     public String toStringLong() {
         if (getAverageGrade() == null) {
             // 20 spaces for name (left alligned), 3 for id (right alligned)
-            return String.format("%-20s (ID: %3s) | no grades yet", getName(), getID());
+            return String.format("%-20s (ID: %3s) | No grades yet", getName(), getID());
         } else {
            // 1 decimal for GPA
             return String.format("%-20s (ID: %3s) | GPA: %.1f", getName(), getID(), getAverageGrade());

@@ -5,11 +5,10 @@ import java.util.Scanner;
 public abstract class BaseMenu {
 
     protected Manager manager;
-    protected Scanner sc;
+    protected static final Scanner sc = new Scanner(System.in);
 
     BaseMenu(Manager manager){
         this.manager = manager;
-        this.sc = new Scanner(System.in);
     }
 
     protected String[] readInput(){

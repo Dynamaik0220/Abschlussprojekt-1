@@ -2,8 +2,8 @@ package abschlussprojekt;
 
 public class MainMenu extends BaseMenu {
 
-    private StudentMenu studentMenu;
-    private ModuleMenu moduleMenu;
+    private final StudentMenu studentMenu;
+    private final ModuleMenu moduleMenu;
 
     MainMenu(Manager manager){
         super(manager);
@@ -24,7 +24,7 @@ public class MainMenu extends BaseMenu {
                     Exit:       (e)xit
                     """);
             String[] input = readInput();
-            switch (input[0]) {
+            switch (input[0].toLowerCase()) {
                 case "s":
                 case "students":
                     studentMenu.start();

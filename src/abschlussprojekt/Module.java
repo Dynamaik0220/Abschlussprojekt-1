@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Module {
-    private int id;
+    private final int id;
     private static int idTracker = 101;
     private String name;
     private List<Enrollment> enrollments;
@@ -62,7 +62,7 @@ public class Module {
     public String toStringLong() {
         if (getAverageGrade() == null) {
             // 30 spaces for name (left alligned), 3 for id (right alligned)
-            return String.format("%-30s (ID: %3s) | no grades yet", getName(), getID());
+            return String.format("%-30s (ID: %3s) | No grades yet", getName(), getID());
         } else {
             // 2 decimals for average grade
             return String.format("%-30s (ID: %3s) | Average grade: %.2f", getName(), getID(), getAverageGrade());

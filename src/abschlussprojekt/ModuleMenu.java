@@ -19,12 +19,12 @@ public class ModuleMenu extends BaseMenu {
                 Show all modules by id:     all
                                  by name:   all, name
                                  by grade:  all, grade
-                Add module:                 add, Name
-                View and manage module:     manage, id
-                Return to main menu:        back
+                Add module:                 add, 'Name'
+                View and manage module:     (m)anage, 'id'
+                Return to main menu:        (b)ack
                 """);
             String[] input = readInput();
-            switch (input[0]) {
+            switch (input[0].toLowerCase()) {
                 case "add":                          // add Module
                     handleAddCommand(input);
                     break;
@@ -33,10 +33,12 @@ public class ModuleMenu extends BaseMenu {
                     handleAllCommand(input);
                     break;
 
+                case "m":
                 case "manage":                          // enroll student
                     handleManageCommand(input);
                     break;
 
+                case "b":
                 case "back":
                     exit = true;
                     break;
@@ -49,7 +51,7 @@ public class ModuleMenu extends BaseMenu {
 
     private void handleAllCommand(String[] input) {
         if (input.length == 2) {
-            switch (input[1]) {
+            switch (input[1].toLowerCase()) {
                 case "name":
                     for (Module module : manager.getModulesSortedByName()) {
                         System.out.println("- " + module.toStringLong());
@@ -76,7 +78,7 @@ public class ModuleMenu extends BaseMenu {
     private void handleManageCommand(String[] input) {
         try {
             if (input.length == 2) {
-                startManageModuleMenu(input, Integer.parseInt(input[1]));
+                startManageModuleMenu(Integer.parseInt(input[1]));
             } else {
                 System.out.println("Invalid input, please use the exact format 'manage, id'");
             }
@@ -96,7 +98,7 @@ public class ModuleMenu extends BaseMenu {
         }
     }
 
-    public void startManageModuleMenu(String[] input, int moduleID) {
+    public void startManageModuleMenu(int moduleID) {
         boolean exitSubmenu = false;
         Module selectedModule = manager.getModuleByID(moduleID);
 
@@ -104,13 +106,14 @@ public class ModuleMenu extends BaseMenu {
             System.out.println("\n----Managing " + selectedModule.toString() + "----");
             System.out.println("""   
                     
-                    Show all information:       (i)nfo
-                    Enroll student in module:   (e)nroll, StudentID
-                    Add grade:                  (g)rade, StudentID, Grade
-                    Delete module:              delete
-                    Return to main menu:        (b)ack
+                    Show all information:           (i)nfo
+                    Enroll student in module:       (e)nroll, 'StudentID'
+                    Unenroll student from module:   (u)nenroll, 'StudentID'
+                    Add grade:                      (g)rade, 'StudentID', 'Grade'
+                    Delete module:                  delete
+                    Return to main menu:            (b)ack
                     """);
-            input = sc.nextLine().split(", ");
+            String[] input = readInput();
             switch(input[0]) {
                 case "i":
                 case "info":
@@ -120,6 +123,11 @@ public class ModuleMenu extends BaseMenu {
                 case "e":
                 case "enroll":
                     handleEnrollCommand(input, moduleID);
+                    break;
+
+                case "u":
+                case "unenroll":
+                    handleUnenrollCommand(input, moduleID);
                     break;
 
                 case "g":
@@ -166,9 +174,7 @@ public class ModuleMenu extends BaseMenu {
                 System.out.println(newEnrollment.getStudent().toString() + " successfully enrolled in module " + newEnrollment.getModule().toString());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, please only use numerical IDs!");
-            } catch (StudentNotFoundException e) {
-                System.out.println("Error: " + e.getMessage());
-            } catch (DuplicateEnrollmentException e) {
+            } catch (StudentNotFoundException | DuplicateEnrollmentException e) {
                 System.out.println("Error: " + e.getMessage());
             }
         } else {
@@ -177,37 +183,31 @@ public class ModuleMenu extends BaseMenu {
     }
 
     private void showInfo(Module selectedModule) {
-        printEnrollments(selectedModule);
-        if (!selectedModule.getEnrollments().isEmpty()) {  // not empty
-            if (selectedModule.getAverageGrade() == null){
-                System.out.println("No grades entered yet");
-            } else {
-                System.out.println("Average grade: " + selectedModule.getAverageGrade());
-            }
-        }
-    }
-
-
-    public void printEnrollments(Module module){
-        List<Enrollment> enrollments = module.getEnrollments();
+        List<Enrollment> enrollments = selectedModule.getEnrollments();
 
         if (enrollments.isEmpty()) {
             System.out.println("No students are enrolled in this module");
             return;
         }
-        for (Enrollment enrollment : enrollments){
-            double grade = enrollment.getGrade();
+
+        for (Enrollment enrollment : enrollments) {
+            Double grade = enrollment.getGrade();
             String studentName = enrollment.getStudent().toString();
-            if (grade == 0.0) {
-                System.out.println("Student: "+ studentName +  " - No grade yet");
-            } else if (!enrollment.isPassed()){
-                System.out.println("Student: "+ studentName + " - Failed with 5.0");
+            if (grade == null) {
+                System.out.println("Student: " + studentName + " - No grade yet");
+            } else if (!enrollment.isPassed()) {
+                System.out.println("Student: " + studentName + " - Failed with 5.0");
             } else {
-                System.out.println("Student: "+ studentName + " - Passed with " + grade);
+                System.out.println("Student: " + studentName + " - Passed with " + grade);
             }
         }
-    }
 
+        if (selectedModule.getAverageGrade() == null) {
+            System.out.println("No grades entered yet");
+        } else {
+            System.out.printf("Average grade: %.2f", selectedModule.getAverageGrade());
+        }
+    }
 
     private void handleGradeCommand(int moduleID, String[] input) {
         if (input.length == 3) {
@@ -216,7 +216,6 @@ public class ModuleMenu extends BaseMenu {
                 double grade = Double.parseDouble(input[2]);
                 manager.setEnrollmentGrade(studentID, moduleID, grade);
                 if (grade == 5.0) {
-
                     System.out.println("Successfully added failing grade 5.0 for student "
                             + manager.getStudentByID(studentID).toString());
                 } else {
@@ -225,9 +224,7 @@ public class ModuleMenu extends BaseMenu {
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input, please only use numerical IDs and grades!");
-            } catch (StudentNotFoundException e) {
-                System.out.println("Error: " + e.getMessage());
-            } catch (InvalidGradeException e) {
+            } catch (StudentNotFoundException | InvalidGradeException e) {
                 System.out.println("Error: " + e.getMessage());
             }
         } else {
@@ -235,9 +232,19 @@ public class ModuleMenu extends BaseMenu {
         }
     }
 
-    public void printModules () {
-        for (Module module : manager.getModules().values()) {
-            System.out.println(module.toStringLong());
+    private void handleUnenrollCommand(String[] input, int moduleID) {
+        if (input.length == 2) {
+            try {
+                int studentID = Integer.parseInt(input[1]);
+                manager.unenrollStudent(studentID, moduleID);
+                System.out.println("Student "+ manager.getStudentByID(studentID).toString() + " successfully unenrolled from module.");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, please only use numerical IDs!");
+            } catch (StudentNotFoundException | ModuleNotFoundException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Invalid input, please use the exact format 'unenroll, studentID'");
         }
     }
 }
